@@ -1,5 +1,3 @@
-// import { CreateJobDTO } from "../dto/create-job.dto";
-
 export interface Job {
   id?: string;
   company?: string;
