@@ -3,7 +3,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { Job } from './interfaces/job.interface';
+import { Job, UpdateJob } from './interfaces/job.interface';
 
 @Injectable()
 export class JobService {
@@ -33,19 +33,17 @@ export class JobService {
     return this.jobs;
   }
 
-  // there is something wrong with this method
-  update(id: string, updatedJob: Partial<Job>): Partial<Job> {
-    console.log('service put id', id);
-    const jobIndex = this.jobs.findIndex((job) => job.id === id);
-    console.log('jobIndex', jobIndex);
+  update(payload: UpdateJob): UpdateJob {
+    const jobIndex = this.jobs.findIndex((job) => job.id === payload.id);
+
     if (jobIndex === -1) {
       throw new NotFoundException(
-        `Job with ID of${id} does not exist and cannot be updated`,
+        `Job with ID of${payload.id} does not exist and cannot be updated`,
       );
     }
 
-    const updatedJobData = { ...this.jobs[jobIndex], ...updatedJob };
-    updatedJobData.id = id;
+    const updatedJobData = { ...this.jobs[jobIndex], ...payload.updatedJob };
+    updatedJobData.id = payload.id;
     this.jobs[jobIndex] = updatedJobData;
     return updatedJobData;
   }
