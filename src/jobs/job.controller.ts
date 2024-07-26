@@ -5,13 +5,17 @@ import {
   Put,
   Body,
   Param,
-  HttpStatus,
   UsePipes,
 } from '@nestjs/common';
 import { JobService } from './job.service';
-import { Job } from './interfaces/job.interface';
+import { Job, UpdateJob } from './interfaces/job.interface';
 import { ZodValidationPipe } from './job.pipe';
-import { JobDTO, jobSchema } from './dto/job.dto';
+import {
+  JobDTO,
+  jobSchema,
+  UpdateJobDTO,
+  updateJobSchema,
+} from './dto/job.dto';
 
 @Controller('jobs')
 export class JobController {
@@ -24,7 +28,6 @@ export class JobController {
   ): Promise<Record<string, unknown>> {
     const createdJob = this.jobService.create(createJobDTO);
     return {
-      statusCode: HttpStatus.CREATED,
       message: 'A job has been created',
       data: createdJob,
     };
@@ -41,11 +44,11 @@ export class JobController {
   }
 
   @Put()
+  @UsePipes(new ZodValidationPipe(updateJobSchema))
   async updateJob(
-    @Body() id: string,
-    updatedJob: JobDTO,
-  ): Promise<Partial<Job>> {
-    console.log('put', id);
-    return this.jobService.update(id, updatedJob);
+    @Body()
+    updateJob: UpdateJobDTO,
+  ): Promise<UpdateJob> {
+    return this.jobService.update(updateJob);
   }
 }
