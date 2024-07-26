@@ -8,3 +8,8 @@ export interface Job {
   isAvailable?: boolean;
   createdAt?: string;
 }
+
+export interface UpdateJob {
+  id?: string;
+  updatedJob?: Job;
+}
