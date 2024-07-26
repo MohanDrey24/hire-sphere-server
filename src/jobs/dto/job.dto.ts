@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const jobSchema = z.object({
-  id: z.string(),
-  company: z.string(),
+  id: z.string().optional(),
+  company: z.string().optional(),
   position: z.string().optional(),
   location: z.string().optional(),
   country: z.string().optional(),
@@ -12,3 +12,12 @@ export const jobSchema = z.object({
 });
 
 export type JobDTO = z.infer<typeof jobSchema>;
+
+export const updateJobSchema = z
+  .object({
+    id: z.string(),
+    updatedJob: jobSchema,
+  })
+  .required();
+
+export type UpdateJobDTO = z.infer<typeof updateJobSchema>;
