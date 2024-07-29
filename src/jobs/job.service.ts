@@ -4,9 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Job, UpdateJob } from './interfaces/job.interface';
+import { PrismaService } from './../prisma.service';
+import { Job as PrismaJob, Prisma } from '@prisma/client';
 
 @Injectable()
 export class JobService {
+  constructor(private prismaService: PrismaService) {}
+
   private readonly jobs: Job[] = [];
 
   create(job: Job): Job {
@@ -46,5 +50,11 @@ export class JobService {
     updatedJobData.id = payload.id;
     this.jobs[jobIndex] = updatedJobData;
     return updatedJobData;
+  }
+
+  async createJob(data: Prisma.JobCreateInput): Promise<PrismaJob> {
+    return this.prismaService.job.create({
+      data,
+    });
   }
 }
