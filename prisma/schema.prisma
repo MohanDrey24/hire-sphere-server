@@ -1,19 +1,22 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./zod"
+  imports  = "../src/zod-schemas"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
 
 model Job {
-  id Int @default(autoincrement()) @id
+  id String @id @default(uuid()) 
   company String
   position String
-  location String
-  country String
+  location String?
+  country String?
   salary Int
   isAvailable Boolean @default(true)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
