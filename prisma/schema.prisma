@@ -1,7 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./zod"
-  imports  = "../src/zod-schemas"
 }
 
 datasource db {
