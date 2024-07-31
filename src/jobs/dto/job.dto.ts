@@ -13,3 +13,5 @@ export const jobSchema = z.object({
 });
 
 export type CreateJobDTO = z.infer<typeof jobSchema>;
+
+export type UpdateJobDTO = z.infer<typeof jobSchema>;
