@@ -38,8 +38,11 @@ export class JobController {
   }
 
   @Put()
-  @UsePipes(new ZodValidationPipe(jobSchema))
-  async updateJob(data: UpdateJobDTO, id: string): Promise<Job> {
-    return await this.jobService.updateJob(data, id);
+  // zod validation is buggy in this API
+  // @UsePipes(new ZodValidationPipe(jobSchema))
+  async updateJob(
+    @Body() body: { data: UpdateJobDTO; id: string },
+  ): Promise<Job> {
+    return await this.jobService.updateJob(body.data, body.id);
   }
 }
