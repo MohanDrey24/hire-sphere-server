@@ -1,8 +1,16 @@
-import { Controller, Post, Body, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  Get,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { JobService } from './job.service';
-import { CreateJobDTO, jobSchema } from './dto/job.dto';
+import { CreateJobDTO, UpdateJobDTO, jobSchema } from './dto/job.dto';
 import { ZodValidationPipe } from './job.pipe';
-import { Job as JobModel } from '@prisma/client';
+import { Job, Prisma } from '@prisma/client';
 
 @Controller('jobs')
 export class JobController {
@@ -13,7 +21,25 @@ export class JobController {
   async createJob(
     @Body()
     data: CreateJobDTO,
-  ): Promise<JobModel> {
-    return this.jobService.createJob(data);
+  ): Promise<Job> {
+    return await this.jobService.createJob(data);
+  }
+
+  @Get('all')
+  async findAll(): Promise<Job[]> {
+    return await this.jobService.findAll();
+  }
+
+  @Get()
+  async findJobsWithCountry(
+    @Query() query: Prisma.JobWhereInput,
+  ): Promise<Job[]> {
+    return await this.jobService.findSpecificJobs(query);
+  }
+
+  @Put()
+  @UsePipes(new ZodValidationPipe(jobSchema))
+  async updateJob(data: UpdateJobDTO, id: string): Promise<Job> {
+    return await this.jobService.updateJob(data, id);
   }
 }
