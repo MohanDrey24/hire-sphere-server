@@ -8,7 +8,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { JobService } from './job.service';
-import { CreateJobDTO, UpdateJobDTO, jobSchema } from './dto/job.dto';
+import {
+  CreateJobDTO,
+  UpdateJobDTO,
+  jobSchema,
+  // updateJobSchema,
+} from './dto/job.dto';
 import { ZodValidationPipe } from './job.pipe';
 import { Job, Prisma } from '@prisma/client';
 
@@ -39,10 +44,10 @@ export class JobController {
 
   @Put()
   // zod validation is buggy in this API
-  // @UsePipes(new ZodValidationPipe(jobSchema))
+  // @UsePipes(new ZodValidationPipe(updateJobSchema))
   async updateJob(
-    @Body() body: { data: UpdateJobDTO; id: string },
+    @Body() body: { data: UpdateJobDTO; where: Prisma.JobWhereUniqueInput },
   ): Promise<Job> {
-    return await this.jobService.updateJob(body.data, body.id);
+    return await this.jobService.updateJob(body);
   }
 }
