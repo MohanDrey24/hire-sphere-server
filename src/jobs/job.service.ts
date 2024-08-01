@@ -22,12 +22,14 @@ export class JobService {
     });
   }
 
-  async updateJob(data: Prisma.JobUpdateInput, id: string): Promise<Job> {
+  async updateJob(body: {
+    data: Prisma.JobUpdateInput;
+    where: Prisma.JobWhereUniqueInput;
+  }): Promise<Job> {
+    const { data, where } = body;
     return await this.prismaService.job.update({
-      where: {
-        id,
-      },
       data,
+      where,
     });
   }
 }
