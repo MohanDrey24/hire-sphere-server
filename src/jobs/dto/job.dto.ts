@@ -14,4 +14,16 @@ export const jobSchema = z.object({
 
 export type CreateJobDTO = z.infer<typeof jobSchema>;
 
-export type UpdateJobDTO = z.infer<typeof jobSchema>;
+export const updateJobSchema = z.object({
+  id: z.string().uuid().optional(),
+  company: z.string().optional(),
+  position: z.string().optional(),
+  location: z.string().optional(),
+  country: z.string().optional(),
+  salary: z.number().optional(),
+  isAvailable: z.boolean().optional(),
+  createdAt: z.string().date().optional(),
+  updatedAt: z.string().date().optional(),
+});
+
+export type UpdateJobDTO = z.infer<typeof updateJobSchema>;
