@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 
@@ -16,19 +16,30 @@ export class JobService {
     return await this.prismaService.job.findMany();
   }
 
-  async findSpecificJobs(column: Prisma.JobWhereInput): Promise<Job[]> {
-    return await this.prismaService.job.findMany({
-      where: column,
+  async findSpecificJobs(where: Prisma.JobWhereInput): Promise<Job[]> {
+    const fetchData = await this.prismaService.job.findMany({
+      where,
+    });
+
+    if (!fetchData) {
+      throw new NotFoundException('Job not found');
+    }
+
+    return fetchData;
+  }
+
+  async updateJob(
+    data: Prisma.JobUncheckedUpdateInput,
+    where: Prisma.JobWhereUniqueInput,
+  ): Promise<Job> {
+    return await this.prismaService.job.update({
+      data,
+      where,
     });
   }
 
-  async updateJob(body: {
-    data: Prisma.JobUpdateInput;
-    where: Prisma.JobWhereUniqueInput;
-  }): Promise<Job> {
-    const { data, where } = body;
-    return await this.prismaService.job.update({
-      data,
+  async deleteJob(where: Prisma.JobWhereUniqueInput): Promise<void> {
+    await this.prismaService.job.delete({
       where,
     });
   }
