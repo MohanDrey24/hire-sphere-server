@@ -4,16 +4,17 @@ import {
   Body,
   UsePipes,
   Get,
+  Param,
   Put,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { JobService } from './job.service';
+import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
 import {
-  CreateJobDTO,
   UpdateJobDTO,
-  jobSchema,
-  // updateJobSchema,
-} from './dto/job.dto';
+  // updateJobSchema
+} from './dto/update-job.dto';
 import { ZodValidationPipe } from './job.pipe';
 import { Job, Prisma } from '@prisma/client';
 
@@ -22,7 +23,7 @@ export class JobController {
   constructor(private readonly jobService: JobService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(jobSchema))
+  @UsePipes(new ZodValidationPipe(createJobSchema))
   async createJob(
     @Body()
     data: CreateJobDTO,
@@ -36,18 +37,25 @@ export class JobController {
   }
 
   @Get()
+  // dont use prisma types in controller
   async findJobsWithCountry(
     @Query() query: Prisma.JobWhereInput,
   ): Promise<Job[]> {
     return await this.jobService.findSpecificJobs(query);
   }
 
-  @Put()
-  // zod validation is buggy in this API
+  //buggy ang zod validation pipe
+  @Put(':id')
   // @UsePipes(new ZodValidationPipe(updateJobSchema))
   async updateJob(
-    @Body() body: { data: UpdateJobDTO; where: Prisma.JobWhereUniqueInput },
+    @Param('id') id: string,
+    @Body() data: UpdateJobDTO,
   ): Promise<Job> {
-    return await this.jobService.updateJob(body);
+    return await this.jobService.updateJob(data, { id });
+  }
+
+  @Delete(':id')
+  async deleteJob(@Param('id') id: string): Promise<void> {
+    return await this.jobService.deleteJob({ id });
   }
 }
