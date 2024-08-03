@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const updateJobSchema = z
   .object({
-    id: z.string().uuid(),
     company: z.string(),
     position: z.string(),
     location: z.string(),
