@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 
@@ -17,15 +17,9 @@ export class JobService {
   }
 
   async findSpecificJobs(where: Prisma.JobWhereInput): Promise<Job[]> {
-    const fetchData = await this.prismaService.job.findMany({
+    return await this.prismaService.job.findMany({
       where,
     });
-
-    if (!fetchData) {
-      throw new NotFoundException('Job not found');
-    }
-
-    return fetchData;
   }
 
   async updateJob(
