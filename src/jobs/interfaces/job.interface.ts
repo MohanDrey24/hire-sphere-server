@@ -1,15 +1,3 @@
-export interface Job {
-  id?: string;
-  company?: string;
-  position?: string;
-  location?: string;
-  country?: string;
-  salary?: number;
-  isAvailable?: boolean;
-  createdAt?: string;
-}
+import { CreateJobDTO } from '../dto/create-job.dto';
 
-export interface UpdateJob {
-  id?: string;
-  updatedJob?: Job;
-}
+export type Job = Partial<Omit<CreateJobDTO, 'id' | 'createdAt' | 'updatedAt'>>;
