@@ -2,7 +2,7 @@ import { Controller, Post, Body, UsePipes, HttpCode } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/users.dto';
-import { ZodValidationPipe } from 'src/jobs/job.pipe';
+import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
