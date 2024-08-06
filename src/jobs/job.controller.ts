@@ -9,18 +9,15 @@ import {
   Query,
   Delete,
   ParseUUIDPipe,
-  UseFilters,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
 import { UpdateJobDTO, updateJobSchema } from './dto/update-job.dto';
 import { ZodValidationPipe } from './job.pipe';
 import { Job } from '@prisma/client';
-import { HttpExceptionFilter } from 'common/filters/http-exception.filter';
 import { JobQueryDTO } from './dto/job-query.dto';
 
 @Controller('jobs')
-@UseFilters(HttpExceptionFilter)
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
@@ -39,7 +36,7 @@ export class JobController {
   }
 
   @Get()
-  async findJobsWithCountry(@Query() query: JobQueryDTO): Promise<Job[]> {
+  async findSpecificJobs(@Query() query: JobQueryDTO): Promise<Job[]> {
     return await this.jobService.findSpecificJobs(query);
   }
 
