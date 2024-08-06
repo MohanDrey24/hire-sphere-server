@@ -7,8 +7,6 @@ export const JobQuerySchema = z
     position: z.string(),
     location: z.string(),
     country: z.string(),
-    salary: z.preprocess((val) => Number(val), z.number().nonnegative()),
-    isAvailable: z.preprocess((val) => val === 'true', z.boolean()),
   })
   .partial();
 
