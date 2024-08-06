@@ -13,7 +13,7 @@ import {
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
 import { UpdateJobDTO, updateJobSchema } from './dto/update-job.dto';
-import { ZodValidationPipe } from './job.pipe';
+import { ZodValidationPipe } from '../../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
 
