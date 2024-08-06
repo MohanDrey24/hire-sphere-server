@@ -29,14 +29,11 @@ export class JobService {
       where.location = { contains: query.location, mode: 'insensitive' };
     if (query.country)
       where.country = { contains: query.country, mode: 'insensitive' };
-    if (query.salary) where.salary = { gte: query.salary };
-    if (query.isAvailable !== undefined) where.isAvailable = query.isAvailable;
 
     return await this.prismaService.job.findMany({
       where,
     });
   }
-
   async updateJob(
     data: Prisma.JobUpdateInput,
     where: Prisma.JobWhereUniqueInput,
