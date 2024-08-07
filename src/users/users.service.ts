@@ -31,7 +31,7 @@ export class UsersService {
     const { email, password } = payload;
     const user = await this.findUser({ email });
 
-    const isMatch = await bcrypt.compareSync(password, user.password);
+    const isMatch = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {
       throw new NotFoundException('Invalid Credentials');
@@ -46,7 +46,10 @@ export class UsersService {
     return await this.prismaService.user.findUniqueOrThrow({ where });
   }
 
-  async validateUser(payload: { email: string; password: string }) {
+  /**
+   * For local strategy
+   * */
+  async validateUser(payload: CreateUserDTO) {
     const { email, password } = payload;
     const user = await this.findUser({ email });
 
@@ -54,7 +57,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    const isMatch = await bcrypt.compareSync(password, user.password);
+    const isMatch = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {
       throw new BadRequestException('Invalid Credentials');
