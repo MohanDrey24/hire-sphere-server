@@ -1,16 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma, User } from '@prisma/client';
+import { CreateUserDTO } from './dto/users.dto';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {}
-
-  saltOrRounds: number = 10;
+  constructor(
+    private prismaService: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
-    const hashedPassword = await bcrypt.hash(data.password, this.saltOrRounds);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     return await this.prismaService.user.create({
       data: {
@@ -20,20 +27,39 @@ export class UsersService {
     });
   }
 
-  async signIn(payload: { email: string; password: string }): Promise<void> {
+  async signIn(payload: CreateUserDTO): Promise<Record<string, string>> {
     const { email, password } = payload;
     const user = await this.findUser({ email });
 
-    const isMatch = await bcrypt.compare(password, user?.password);
+    const isMatch = await bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {
       throw new NotFoundException('Invalid Credentials');
-    } else {
-      console.log('SUCCESSFULLY LOGGED IN');
     }
+
+    return {
+      access_token: this.jwtService.sign({ id: user.id }),
+    };
   }
 
-  async findUser(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
-    return await this.prismaService.user.findUnique({ where });
+  async findUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return await this.prismaService.user.findUniqueOrThrow({ where });
+  }
+
+  async validateUser(payload: { email: string; password: string }) {
+    const { email, password } = payload;
+    const user = await this.findUser({ email });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isMatch = await bcrypt.compareSync(password, user.password);
+
+    if (!isMatch) {
+      throw new BadRequestException('Invalid Credentials');
+    }
+
+    return user;
   }
 }
