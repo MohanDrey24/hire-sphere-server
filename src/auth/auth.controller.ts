@@ -1,23 +1,31 @@
-import { Controller, Post, Body, UsePipes, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  HttpCode,
+  UseGuards,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/users.dto';
 import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
+@UsePipes(new ZodValidationPipe(usersSchema))
 export class AuthController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(usersSchema))
   async signUp(@Body() data: CreateUserDTO): Promise<User> {
     return await this.usersService.createUser(data);
   }
 
   @Post('signin')
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(usersSchema))
-  async signIn(@Body() data: CreateUserDTO): Promise<void> {
+  @UseGuards(AuthGuard('local'))
+  async signIn(@Body() data: CreateUserDTO): Promise<Record<string, string>> {
     return await this.usersService.signIn(data);
   }
 }
