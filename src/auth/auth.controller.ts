@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
-import { usersSchema, CreateUserDTO } from 'src/users/dto/users.dto';
+import { usersSchema, CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 
