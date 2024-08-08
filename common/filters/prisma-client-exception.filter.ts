@@ -23,6 +23,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         });
         break;
       }
+      case 'P2025':
       case 'P2018': {
         const status = HttpStatus.NOT_FOUND;
         response.status(status).json({
