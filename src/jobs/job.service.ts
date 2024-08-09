@@ -20,7 +20,7 @@ export class JobService {
   async findSpecificJobs(query: JobQueryDTO): Promise<Job[]> {
     const where: Prisma.JobWhereInput = {};
 
-    if (query.id) where.id = query.id;
+    if (query.id) where.jobId = query.id;
     if (query.company)
       where.company = { contains: query.company, mode: 'insensitive' };
     if (query.position)
