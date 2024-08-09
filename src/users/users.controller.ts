@@ -8,8 +8,8 @@ export class UsersController {
 
   @Get()
   async findUser(
-    @Query('id', new ParseUUIDPipe()) id: string,
+    @Query('userId', new ParseUUIDPipe()) userId: string,
   ): Promise<UserQuery> {
-    return await this.usersService.findUser({ id });
+    return await this.usersService.findUser({ userId });
   }
 }

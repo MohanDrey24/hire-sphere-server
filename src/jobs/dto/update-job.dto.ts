@@ -3,7 +3,7 @@ import { createJobSchema } from './create-job.dto';
 
 export const updateJobSchema = createJobSchema
   .omit({
-    id: true,
+    jobId: true,
     createdAt: true,
     updatedAt: true,
   })

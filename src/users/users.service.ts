@@ -29,10 +29,10 @@ export class UsersService {
   }
 
   async signIn(payload: CreateUserDTO): Promise<Record<string, string>> {
-    const user = await this.validateUser(payload);
+    const result = await this.validateUser(payload);
 
     return {
-      access_token: this.jwtService.sign({ id: user.id }),
+      access_token: this.jwtService.sign({ id: result.userId }),
     };
   }
 
@@ -40,7 +40,7 @@ export class UsersService {
     return await this.prismaService.user.findUniqueOrThrow({
       where,
       select: {
-        id: true,
+        userId: true,
         email: true,
         createdAt: true,
         updatedAt: true,
