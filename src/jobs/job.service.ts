@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
@@ -30,10 +30,17 @@ export class JobService {
     if (query.country)
       where.country = { contains: query.country, mode: 'insensitive' };
 
-    return await this.prismaService.job.findMany({
+    const result = await this.prismaService.job.findMany({
       where,
     });
+
+    if (result.length === 0) {
+      throw new NotFoundException('No job found matching this criteria');
+    }
+
+    return result;
   }
+
   async updateJob(
     data: Prisma.JobUpdateInput,
     where: Prisma.JobWhereUniqueInput,
