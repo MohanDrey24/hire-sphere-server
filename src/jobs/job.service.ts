@@ -52,8 +52,6 @@ export class JobService {
   }
 
   async deleteJob(where: Prisma.JobWhereUniqueInput): Promise<void> {
-    await this.prismaService.job.delete({
-      where,
-    });
+    await this.prismaService.job.delete({ where });
   }
 }
