@@ -9,6 +9,7 @@ import {
   Query,
   Delete,
   ParseUUIDPipe,
+  HttpCode,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
@@ -49,7 +50,8 @@ export class JobController {
   }
 
   @Delete(':jobId')
+  @HttpCode(204)
   async deleteJob(@Param('jobId', ParseUUIDPipe) jobId: string): Promise<void> {
-    return await this.jobService.deleteJob({ jobId });
+    await this.jobService.deleteJob({ jobId });
   }
 }
