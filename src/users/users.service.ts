@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma, User } from '@prisma/client';
-import { CreateUserDTO } from './dto/create-user.dto';
 import { UserQuery } from './interfaces/users.interfaces';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -28,7 +27,10 @@ export class UsersService {
     });
   }
 
-  async signIn(payload: CreateUserDTO): Promise<Record<string, string>> {
+  async signIn(payload: {
+    email: string;
+    password: string;
+  }): Promise<Record<string, string>> {
     const result = await this.validateUser(payload);
 
     return {
@@ -42,13 +44,17 @@ export class UsersService {
       select: {
         id: true,
         email: true,
+        username: true,
         createdAt: true,
         updatedAt: true,
       },
     });
   }
 
-  async validateUser(payload: CreateUserDTO): Promise<User> {
+  async validateUser(payload: {
+    email: string;
+    password: string;
+  }): Promise<User> {
     const { email, password } = payload;
     const user = await this.prismaService.user.findUniqueOrThrow({
       where: { email },
