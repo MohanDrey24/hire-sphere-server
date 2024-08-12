@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
-import { UpdateJobDTO, updateJobSchema } from './dto/update-job.dto';
+import { UpdateJobDTO } from './dto/update-job.dto';
 import { ZodValidationPipe } from '../../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
@@ -44,7 +44,7 @@ export class JobController {
   @Put(':id')
   async updateJob(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body(new ZodValidationPipe(updateJobSchema)) data: UpdateJobDTO,
+    @Body(new ZodValidationPipe(createJobSchema)) data: UpdateJobDTO,
   ): Promise<Job> {
     return await this.jobService.updateJob(data, { id });
   }
