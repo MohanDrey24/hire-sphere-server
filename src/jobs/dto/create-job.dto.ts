@@ -1,15 +1,16 @@
 import { z } from 'zod';
 
 export const createJobSchema = z.object({
-  jobId: z.string().uuid().optional(),
-  company: z.string(),
-  position: z.string(),
-  location: z.string(),
-  country: z.string(),
-  salary: z.number(),
-  isAvailable: z.boolean().optional(),
-  createdAt: z.string().date().optional(),
-  updatedAt: z.string().date().optional(),
+  company: z.object({
+    connect: z.object({
+      id: z.string().uuid(),
+    }),
+  }),
+  position: z.string().min(1),
+  location: z.enum(['HYBRID', 'REMOTE', 'ONSITE']),
+  country: z.string().optional(),
+  salary: z.number().positive(),
+  isAvailable: z.boolean().default(true),
 });
 
 export type CreateJobDTO = z.infer<typeof createJobSchema>;
