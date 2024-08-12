@@ -32,7 +32,7 @@ export class UsersService {
     const result = await this.validateUser(payload);
 
     return {
-      access_token: this.jwtService.sign({ id: result.userId }),
+      access_token: this.jwtService.sign({ id: result.id }),
     };
   }
 
@@ -40,7 +40,7 @@ export class UsersService {
     return await this.prismaService.user.findUniqueOrThrow({
       where,
       select: {
-        userId: true,
+        id: true,
         email: true,
         createdAt: true,
         updatedAt: true,

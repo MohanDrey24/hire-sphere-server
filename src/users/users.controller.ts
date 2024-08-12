@@ -15,17 +15,13 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  async findUser(
-    @Query('userId', ParseUUIDPipe) userId: string,
-  ): Promise<UserQuery> {
-    return await this.usersService.findUser({ userId });
+  async findUser(@Query('id', ParseUUIDPipe) id: string): Promise<UserQuery> {
+    return await this.usersService.findUser({ id });
   }
 
-  @Delete(':userId')
+  @Delete(':id')
   @HttpCode(204)
-  async deletUser(
-    @Param('userId', ParseUUIDPipe) userId: string,
-  ): Promise<void> {
-    await this.usersService.deleteUser({ userId });
+  async deletUser(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.usersService.deleteUser({ id });
   }
 }

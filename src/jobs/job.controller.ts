@@ -41,17 +41,17 @@ export class JobController {
     return await this.jobService.findSpecificJobs(query);
   }
 
-  @Put(':jobId')
+  @Put(':id')
   async updateJob(
-    @Param('jobId', ParseUUIDPipe) jobId: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new ZodValidationPipe(updateJobSchema)) data: UpdateJobDTO,
   ): Promise<Job> {
-    return await this.jobService.updateJob(data, { jobId });
+    return await this.jobService.updateJob(data, { id });
   }
 
-  @Delete(':jobId')
+  @Delete(':id')
   @HttpCode(204)
-  async deleteJob(@Param('jobId', ParseUUIDPipe) jobId: string): Promise<void> {
-    await this.jobService.deleteJob({ jobId });
+  async deleteJob(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.jobService.deleteJob({ id });
   }
 }
