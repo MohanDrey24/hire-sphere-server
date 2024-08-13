@@ -26,7 +26,7 @@ export class CompanyController {
   }
 
   @Get()
-  async find(@Query('id', ParseUUIDPipe) id: string): Promise<Company[]> {
+  async find(@Query('id', ParseUUIDPipe) id: string): Promise<Company> {
     return this.companyService.find({ id });
   }
 }
