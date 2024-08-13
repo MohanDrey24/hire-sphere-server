@@ -16,7 +16,7 @@ import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
 import { UpdateJobDTO } from './dto/update-job.dto';
 import { ZodValidationPipe } from '../../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
-import { JobQueryDTO } from './dto/job-query.dto';
+import { JobQueryDTO, JobQuerySchema } from './dto/job-query.dto';
 
 @Controller('jobs')
 export class JobController {
@@ -24,10 +24,7 @@ export class JobController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createJobSchema))
-  async createJob(
-    @Body()
-    data: CreateJobDTO,
-  ): Promise<Job> {
+  async createJob(@Body() data: CreateJobDTO): Promise<Job> {
     return await this.jobService.createJob(data);
   }
 
@@ -37,6 +34,7 @@ export class JobController {
   }
 
   @Get()
+  @UsePipes(new ZodValidationPipe(JobQuerySchema))
   async findSpecificJobs(@Query() query: JobQueryDTO): Promise<Job[]> {
     return await this.jobService.findSpecificJobs(query);
   }
