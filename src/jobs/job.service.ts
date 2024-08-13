@@ -20,8 +20,7 @@ export class JobService {
     const where: Prisma.JobWhereInput = {};
 
     if (query.id) where.id = query.id;
-    if (query.position)
-      where.position = { contains: query.position, mode: 'insensitive' };
+    if (query.location) where.location = { equals: query.location };
     if (query.country)
       where.country = { contains: query.country, mode: 'insensitive' };
 
