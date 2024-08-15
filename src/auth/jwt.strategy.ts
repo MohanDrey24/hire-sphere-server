@@ -1,6 +1,7 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,5 +17,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       id: payload.id,
     };
+  }
+
+  async extractJWT(req: Request): Promise<string | null> {
+    if (
+      req.cookies &&
+      'user.token' in req.cookies &&
+      req.cookies.user_token.length > 0
+    ) {
+      return req.cookies.user_token;
+    } else {
+      return null;
+    }
   }
 }
