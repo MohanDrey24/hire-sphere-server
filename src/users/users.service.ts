@@ -27,15 +27,10 @@ export class UsersService {
     });
   }
 
-  async signIn(payload: {
-    email: string;
-    password: string;
-  }): Promise<Record<string, string>> {
+  async signIn(payload: { email: string; password: string }): Promise<string> {
     const result = await this.validateUser(payload);
 
-    return {
-      access_token: this.jwtService.sign({ id: result.id }),
-    };
+    return this.jwtService.sign({ id: result.id });
   }
 
   async findUser(where: Prisma.UserWhereUniqueInput): Promise<UserQuery> {
@@ -56,6 +51,7 @@ export class UsersService {
     password: string;
   }): Promise<User> {
     const { email, password } = payload;
+    
     const user = await this.prismaService.user.findUniqueOrThrow({
       where: { email },
     });
