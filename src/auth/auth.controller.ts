@@ -2,9 +2,10 @@ import {
   Controller,
   Post,
   Body,
-  UsePipes,
   HttpCode,
   UseGuards,
+  Get,
+  Req,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
@@ -18,16 +19,38 @@ export class AuthController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(usersSchema))
-  async signUp(@Body() data: CreateUserDTO): Promise<User> {
+  async signUp(
+    @Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO,
+  ): Promise<User> {
     return await this.usersService.createUser(data);
   }
 
   @Post('signin')
   @HttpCode(200)
   @UseGuards(AuthGuard('local'))
-  @UsePipes(new ZodValidationPipe(signInSchema))
-  async signIn(@Body() data: SignInDTO): Promise<Record<string, string>> {
+  async signIn(
+    @Body(new ZodValidationPipe(signInSchema)) data: SignInDTO,
+  ): Promise<Record<string, string>> {
     return await this.usersService.signIn(data);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req: any): Promise<any> {
+    //TO DO
+    return req;
+  }
+
+  /**
+   * DONT FORGET TO CHANGE THE REDIRECT URI IN
+   * https://console.cloud.google.com/apis/credentials?project=hire-sphere-432601
+   */
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: any): Promise<Record<string, string>> {
+    return {
+      message: `User Information from ${req.user.provider}`,
+      user: req.user._json,
+    };
   }
 }
