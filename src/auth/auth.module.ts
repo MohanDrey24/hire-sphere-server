@@ -11,7 +11,7 @@ import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
