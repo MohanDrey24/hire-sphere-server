@@ -33,8 +33,8 @@ export class UsersService {
     return this.jwtService.sign({ id: result.id });
   }
 
-  async findUser(where: Prisma.UserWhereUniqueInput): Promise<UserQuery> {
-    return await this.prismaService.user.findUniqueOrThrow({
+  findUser(where: Prisma.UserWhereUniqueInput): Promise<UserQuery> {
+    return this.prismaService.user.findUniqueOrThrow({
       where,
       select: {
         id: true,
@@ -51,7 +51,7 @@ export class UsersService {
     password: string;
   }): Promise<User> {
     const { email, password } = payload;
-    
+
     const user = await this.prismaService.user.findUniqueOrThrow({
       where: { email },
     });
@@ -69,7 +69,7 @@ export class UsersService {
     return user;
   }
 
-  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<void> {
-    await this.prismaService.user.delete({ where });
+  deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return this.prismaService.user.delete({ where });
   }
 }
