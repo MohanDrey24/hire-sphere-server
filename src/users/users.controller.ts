@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserQuery } from './interfaces/users.interfaces';
+import { User } from '@prisma/client';
 // import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
@@ -24,7 +25,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  async deletUser(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    await this.usersService.deleteUser({ id });
+  deletUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
+    return this.usersService.deleteUser({ id });
   }
 }
