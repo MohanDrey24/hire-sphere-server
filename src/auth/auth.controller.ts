@@ -51,6 +51,12 @@ export class AuthController {
     }
   }
 
+  @Post('signout')
+  async signout(@Res({ passthrough: true }) res: Response): Promise<void> {
+    res.cookie('HS', '', { expires: new Date() });
+    res.status(HttpStatus.OK);
+  }
+
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request): Promise<Request> {
