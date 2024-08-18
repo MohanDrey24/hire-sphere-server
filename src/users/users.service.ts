@@ -5,10 +5,13 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma, User } from '@prisma/client';
-import { UserQuery } from './interfaces/users.interfaces';
+// import { UserQuery } from './interfaces/users.interfaces';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { v4 as uuidV4 } from 'uuid';
 
+// DAPAT IBALHIN SA AUTH SERVICE
 @Injectable()
 export class UsersService {
   constructor(
@@ -16,15 +19,29 @@ export class UsersService {
     private jwtService: JwtService,
   ) {}
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
+  // DONT RETURN ACCOUNT
+  async createUser(data: CreateUserDTO) {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(data.password, salt);
 
-    return await this.prismaService.user.create({
-      data: {
-        ...data,
-        password: hashedPassword,
-      },
+    return this.prismaService.$transaction(async (prisma) => {
+      const user = await prisma.user.create({
+        data: {
+          username: data.username,
+          email: data.email,
+        },
+      });
+
+      const account = await prisma.account.create({
+        data: {
+          userId: user.id,
+          provider: 'CREDENTIALS',
+          providerAccountId: uuidV4(),
+          password: hashedPassword,
+        },
+      });
+
+      return { user, account };
     });
   }
 
@@ -34,7 +51,7 @@ export class UsersService {
     return this.jwtService.sign({ id: result.id });
   }
 
-  findUser(where: Prisma.UserWhereUniqueInput): Promise<UserQuery> {
+  findUser(where: Prisma.UserWhereUniqueInput) {
     return this.prismaService.user.findUniqueOrThrow({
       where,
       select: {
@@ -47,21 +64,25 @@ export class UsersService {
     });
   }
 
-  async validateUser(payload: {
-    email: string;
-    password: string;
-  }): Promise<User> {
+  // USE $transaction
+  async validateUser(payload: { email: string; password: string }) {
     const { email, password } = payload;
 
     const user = await this.prismaService.user.findUniqueOrThrow({
       where: { email },
     });
 
+    const account = await this.prismaService.account.findFirstOrThrow({
+      where: {
+        userId: user.id,
+      },
+    });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    const isMatch = bcrypt.compareSync(password, user.password);
+    const isMatch = bcrypt.compareSync(password, account?.password ?? '');
 
     if (!isMatch) {
       throw new BadRequestException('Invalid Credentials');
