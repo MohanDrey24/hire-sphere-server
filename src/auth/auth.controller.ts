@@ -9,7 +9,7 @@ import {
   NotFoundException,
   HttpStatus,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
+// import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
@@ -27,9 +27,7 @@ export class AuthController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  async signUp(
-    @Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO,
-  ): Promise<User> {
+  async signUp(@Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO) {
     return await this.usersService.createUser(data);
   }
 
