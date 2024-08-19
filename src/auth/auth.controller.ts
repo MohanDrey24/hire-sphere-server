@@ -9,26 +9,20 @@ import {
   NotFoundException,
   HttpStatus,
 } from '@nestjs/common';
-// import { User } from '@prisma/client';
-import { UsersService } from 'src/users/users.service';
+import { AuthService } from './auth.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/create-user.dto';
 import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDTO, signInSchema } from 'src/users/dto/sign-in.dto';
 import { Request, Response } from 'express';
-
-interface GoogleUser {
-  provider: string;
-  _json: any;
-}
-
+import { GoogleUser } from './interfaces/google-user.interface';
 @Controller('auth')
 export class AuthController {
-  constructor(private usersService: UsersService) {}
+  constructor(private authService: AuthService) {}
 
   @Post()
   async signUp(@Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO) {
-    return await this.usersService.createUser(data);
+    return await this.authService.createUser(data);
   }
 
   @Post('signin')
@@ -38,7 +32,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<Record<string, string>> {
     try {
-      const token = await this.usersService.signIn(data);
+      const token = await this.authService.signIn(data);
 
       res.cookie('HS', token, { httpOnly: true });
       res.status(HttpStatus.OK);
@@ -74,7 +68,7 @@ export class AuthController {
     if (user) {
       return {
         message: `User Information from ${user.provider}`,
-        user: user._json,
+        user,
       };
     } else {
       throw new Error('User information not available');
