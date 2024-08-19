@@ -9,7 +9,6 @@ import {
   // UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-// import { UserQuery } from './interfaces/users.interfaces';
 import { User } from '@prisma/client';
 // import { AuthGuard } from '@nestjs/passport';
 
@@ -19,7 +18,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  async findUser(@Query('id', ParseUUIDPipe) id: string) {
+  async findUser(@Query('id', ParseUUIDPipe) id: string): Promise<User> {
     return await this.usersService.findUser({ id });
   }
 
