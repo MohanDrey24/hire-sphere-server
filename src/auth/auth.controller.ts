@@ -15,7 +15,8 @@ import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDTO, signInSchema } from 'src/users/dto/sign-in.dto';
 import { Request, Response } from 'express';
-import { GoogleUser } from './interfaces/google-user.interface';
+import { GoogleUserInfo } from './interfaces/google-user.interface';
+
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -62,14 +63,28 @@ export class AuthController {
    */
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req: Request): Promise<Record<string, any>> {
-    const user = req.user as GoogleUser;
+  async googleAuthRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Record<string, string>> {
+    const google = req.user as GoogleUserInfo;
 
-    if (user) {
-      return {
-        message: `User Information from ${user.provider}`,
-        user,
-      };
+    if (google) {
+      const token = await this.authService.googleSSO(
+        {
+          username: google.displayName,
+          email: google._json.email,
+        },
+        {
+          provider: google.provider.toUpperCase(),
+          providerAccountId: google.id,
+        },
+      );
+
+      res.cookie('HS', token, { httpOnly: true });
+      res.status(HttpStatus.OK);
+
+      return { message: 'Log in successful' };
     } else {
       throw new Error('User information not available');
     }
