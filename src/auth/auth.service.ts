@@ -18,12 +18,11 @@ export class AuthService {
   async createUser(data: CreateUserDTO): Promise<User> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(data.password, salt);
-    const { username, email } = data;
+    const { email } = data;
 
     return this.prismaService.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
-          username,
           email,
         },
       });
@@ -47,21 +46,16 @@ export class AuthService {
     return this.jwtService.sign({ id: result.id });
   }
 
-  async validateUser(profile: any): Promise<any> {
-    return profile;
-  }
-
-  async googleSSO(
-    payload: { username: string; email: string },
-    googleData: { provider: string; providerAccountId: string },
-  ): Promise<string> {
-    const { username, email } = payload;
-    const { provider, providerAccountId } = googleData;
+  async googleSSO(googleData: {
+    email: string;
+    provider: string;
+    providerAccountId: string;
+  }): Promise<string> {
+    const { email, provider, providerAccountId } = googleData;
 
     return this.prismaService.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
-          username,
           email,
         },
       });
@@ -76,5 +70,9 @@ export class AuthService {
 
       return this.jwtService.sign({ id: user.id });
     });
+  }
+
+  async validateUser(profile: any): Promise<any> {
+    return profile;
   }
 }
