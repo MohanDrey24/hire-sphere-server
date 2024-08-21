@@ -31,14 +31,12 @@ export class AuthController {
   async signIn(
     @Body(new ZodValidationPipe(signInSchema)) data: SignInDTO,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<Record<string, string>> {
+  ): Promise<void> {
     try {
       const token = await this.authService.signIn(data);
 
       res.cookie('HS', token, { httpOnly: true });
-      res.status(HttpStatus.OK);
-
-      return { message: 'Log in successful' };
+      res.status(HttpStatus.OK).json({ message: 'Log in successful' });
     } catch (error) {
       throw new NotFoundException('Log in unsuccessful');
     }
@@ -66,27 +64,22 @@ export class AuthController {
   async googleAuthRedirect(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<Record<string, string>> {
+  ): Promise<void> {
     const google = req.user as GoogleUserInfo;
 
     if (google) {
-      const token = await this.authService.googleSSO(
-        {
-          username: google.displayName,
-          email: google._json.email,
-        },
-        {
-          provider: google.provider.toUpperCase(),
-          providerAccountId: google.id,
-        },
-      );
+      const token = await this.authService.googleSSO({
+        email: google._json.email,
+        provider: google.provider.toUpperCase(),
+        providerAccountId: google.id,
+      });
 
       res.cookie('HS', token, { httpOnly: true });
-      res.status(HttpStatus.OK);
-
-      return { message: 'Log in successful' };
+      res.status(HttpStatus.OK).json({ message: 'Log in successful' });
     } else {
-      throw new Error('User information not available');
+      res.status(HttpStatus.NOT_FOUND).json({
+        message: 'User information not found',
+      });
     }
   }
 }
