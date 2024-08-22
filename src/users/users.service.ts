@@ -52,4 +52,12 @@ export class UsersService {
   deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
     return this.prismaService.user.delete({ where });
   }
+
+  async findIdByEmail(where: Prisma.UserWhereUniqueInput): Promise<{ id: string }> {
+    const user = await this.prismaService.user.findUniqueOrThrow({
+      where,
+    });
+
+    return { id: user.id };
+  }
 }
