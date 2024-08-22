@@ -15,11 +15,15 @@ import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDTO, signInSchema } from 'src/users/dto/sign-in.dto';
 import { Request, Response } from 'express';
-import { GoogleUserInfo } from './interfaces/google-user.interface';
+import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post()
   async signUp(@Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO) {
@@ -65,15 +69,10 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const google = req.user as GoogleUserInfo;
+    const userProfile = req.user as User
 
-    if (google) {
-      const token = await this.authService.googleSSO({
-        email: google._json.email,
-        provider: google.provider.toUpperCase(),
-        providerAccountId: google.id,
-      });
-
+    if (userProfile) {
+      const token = this.jwtService.sign({ id: userProfile.id })
       res.cookie('HS', token, { httpOnly: true });
       res.status(HttpStatus.OK).json({ message: 'Log in successful' });
     } else {
