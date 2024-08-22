@@ -46,33 +46,43 @@ export class AuthService {
     return this.jwtService.sign({ id: result.id });
   }
 
-  async googleSSO(googleData: {
-    email: string;
-    provider: string;
-    providerAccountId: string;
-  }): Promise<string> {
-    const { email, provider, providerAccountId } = googleData;
+  async validateUser(payload: { 
+    email: string, 
+    provider: string, 
+    providerAccountId: string,
+    access_token: string,
+    refresh_token: string,
+  }): Promise<User> {
+    const { email, provider, providerAccountId, access_token, refresh_token } = payload
 
-    return this.prismaService.$transaction(async (prisma) => {
-      const user = await prisma.user.create({
-        data: {
-          email,
-        },
-      });
-
-      await prisma.account.create({
-        data: {
-          userId: user.id,
-          provider,
-          providerAccountId,
-        },
-      });
-
-      return this.jwtService.sign({ id: user.id });
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      }
     });
-  }
 
-  async validateUser(profile: any): Promise<any> {
-    return profile;
+    if (user) {
+      return user;
+    } else {
+      return this.prismaService.$transaction(async (prisma) => {
+        const newUser = await prisma.user.create({
+          data: {
+            email,
+          },
+        });
+
+        await prisma.account.create({
+          data: {
+            userId: newUser.id,
+            provider: provider.toUpperCase(),
+            providerAccountId,
+            access_token,
+            refresh_token,
+          },
+        });
+
+        return newUser;
+      })
+    }
   }
 }
