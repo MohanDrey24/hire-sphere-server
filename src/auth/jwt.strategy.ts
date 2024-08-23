@@ -8,27 +8,24 @@ import { Request } from 'express';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        JwtStrategy.extractJWT,
+      ]),
       secretOrKey: process.env.JWT_SECRET,
     });
   }
 
-  async validate(payload: { id: string }): Promise<Record<string, string>> {
+  async validate(payload: { id: string }): Promise<{ id: string }> {
     return {
       id: payload.id,
     };
   }
 
-  async extractJWT(req: Request): Promise<string | null> {
-    if (
-      req.cookies &&
-      'user.token' in req.cookies &&
-      req.cookies.user_token.length > 0
-    ) {
-      return req.cookies.user_token;
-    } else {
-      return null;
+  private static extractJWT(req: Request): string | null {
+    if (req.cookies && 'HS' in req.cookies) {
+      return req.cookies.HS;
     }
+
+    return null;
   }
 }
