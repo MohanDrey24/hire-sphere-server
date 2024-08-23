@@ -10,6 +10,7 @@ import {
   Delete,
   ParseUUIDPipe,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
@@ -17,6 +18,7 @@ import { UpdateJobDTO } from './dto/update-job.dto';
 import { ZodValidationPipe } from '../../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
 import { JobQueryDTO, JobQuerySchema } from './dto/job-query.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('jobs')
 export class JobController {
@@ -29,6 +31,7 @@ export class JobController {
   }
 
   @Get('all')
+  @UseGuards(AuthGuard('jwt'))
   async findAll(): Promise<Job[]> {
     return await this.jobService.findAll();
   }
