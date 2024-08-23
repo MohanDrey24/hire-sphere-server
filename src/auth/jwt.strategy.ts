@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
-// I DONT KNOW IF IT WORKS
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
