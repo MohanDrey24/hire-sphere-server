@@ -12,8 +12,8 @@ import { UsersService } from './users.service';
 import { User } from '@prisma/client';
 // import { AuthGuard } from '@nestjs/passport';
 
+// @UseGuards(AuthGuard('jwt'))
 @Controller('users')
-//@UseGuards(AuthGuard('jwt'))
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
