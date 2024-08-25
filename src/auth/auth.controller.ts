@@ -55,7 +55,6 @@ export class AuthController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request): Promise<Request> {
-    //TO DO
     return req;
   }
 
