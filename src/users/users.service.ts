@@ -11,8 +11,8 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  findUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prismaService.user.findUniqueOrThrow({
+  async findUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return await this.prismaService.user.findUniqueOrThrow({
       where,
       include: {
         accounts: true,
@@ -49,8 +49,8 @@ export class UsersService {
     return user;
   }
 
-  deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prismaService.user.delete({ where });
+  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return await this.prismaService.user.delete({ where });
   }
 
   async findIdByEmail(where: Prisma.UserWhereUniqueInput): Promise<{ id: string }> {
