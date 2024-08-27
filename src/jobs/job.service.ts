@@ -15,7 +15,6 @@ export class JobService {
     return await this.prismaService.job.findMany();
   }
 
-  // NEED MORE EXHAUSTIVE FIND QUERY
   async findSpecificJobs(query: JobQueryDTO): Promise<Job[]> {
     const where: Prisma.JobWhereInput = {};
 
