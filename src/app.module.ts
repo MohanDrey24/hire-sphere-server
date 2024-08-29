@@ -15,10 +15,23 @@ import { ThrottlerGuard } from '@nestjs/throttler';
     UsersModule, 
     CompanyModule, 
     FavoritesModule,
-    ThrottlerModule.forRoot([{
-      ttl: 10000,
-      limit: 3,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 10000,
+        limit: 3,
+      },
+      {
+        name: 'medium',
+        ttl: 10000,
+        limit: 4
+      },
+      {
+        name: 'long',
+        ttl: 10000,
+        limit: 5
+      }
+    ]),
   ],
   providers: [
     {
