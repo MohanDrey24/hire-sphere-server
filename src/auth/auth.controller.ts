@@ -17,7 +17,9 @@ import { SignInDTO, signInSchema } from 'src/users/dto/sign-in.dto';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+@UseGuards(ThrottlerGuard)
 @Controller('auth')
 export class AuthController {
   constructor(
