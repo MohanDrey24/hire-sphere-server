@@ -9,6 +9,8 @@ async function bootstrap() {
   
   app.use(cookieParser());
 
+  app.setGlobalPrefix('api')
+
   const config = new DocumentBuilder()
     .setTitle('Hire Sphere')
     .setDescription('The Hire Sphere API description')
