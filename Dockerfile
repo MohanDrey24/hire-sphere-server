@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Install pnpm and necessary build tools
 RUN apk add --no-cache libc6-compat
