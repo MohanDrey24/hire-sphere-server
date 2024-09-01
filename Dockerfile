@@ -1,44 +1,35 @@
-FROM node:20-alpine AS builder
+# Use Node.js 20 as the base image
+FROM node:20
 
-# Install pnpm and necessary build tools
-RUN apk add --no-cache libc6-compat
-RUN apk add --no-cache openssl
+# Install pnpm
 RUN npm install -g pnpm
 
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and pnpm-lock.yaml (if you have one)
-COPY package.json pnpm-lock.yaml* ./
+# Copy pnpm-lock.yaml and package.json
+COPY pnpm-lock.yaml* package.json ./
 
 # Install dependencies
 RUN pnpm install
 
-# Copy the rest of your application's code
-COPY . .
+# Copy prisma schema
+COPY prisma ./prisma/
 
 # Generate Prisma client
-RUN pnpm prisma generate
+RUN npx prisma generate
 
-# Build your application
+# Copy the rest of the application code
+COPY . .
+
+# Build the application
 RUN pnpm run build
 
-# Start a new stage for a smaller final image
-FROM node:18-alpine
-
-WORKDIR /usr/src/app
-
-# Copy necessary files from builder stage
-COPY --from=builder /usr/src/app/node_modules ./node_modules
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/package.json ./package.json
-
-# Copy Prisma schema and generated client
-COPY --from=builder /usr/src/app/prisma ./prisma
-
-# Copy .env file
+# Copy the .env file
 COPY .env .env
 
+# Expose the port the app runs on
 EXPOSE 4000
 
-# Run Prisma migrations and start the application
-CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# Command to run the application
+CMD npx prisma generate && pnpm run start:prod
