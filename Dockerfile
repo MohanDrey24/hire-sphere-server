@@ -1,35 +1,39 @@
 # Use Node.js 20 as the base image
-FROM node:20
+FROM node:20 as base
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy pnpm-lock.yaml and package.json
-COPY pnpm-lock.yaml* package.json ./
+COPY package.json .
+COPY package-lock.json .
 
-# Install dependencies
-RUN pnpm install
+RUN npm ci
 
-# Copy prisma schema
-COPY prisma ./prisma/
+FROM node:20-alpine as build
 
-# Generate Prisma client
-RUN npx prisma generate
+WORKDIR /usr/src/app
 
-# Copy the rest of the application code
 COPY . .
 
-# Build the application
-RUN pnpm run build
+COPY --from=base /usr/src/app/node_modules ./node_modules
 
-# Copy the .env file
-COPY .env .env
+RUN npx prisma generate
 
-# Expose the port the app runs on
+RUN npm run build
+
+FROM node:20-alpine as runner
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/.env .env
+COPY --from=build /usr/src/app/package.json .
+COPY --from=build /usr/src/app/package-lock.json .
+RUN npm install --omit=dev
+
+COPY --from=build /usr/src/app/node_modules/.prisma/client ./node_modules/.prisma/client
+
 EXPOSE 4000
+ENV NODE_ENV production
+ENV PORT 4000
 
-# Command to run the application
-CMD npx prisma generate && pnpm run start:prod
+CMD ["node", "dist/src/main"]
