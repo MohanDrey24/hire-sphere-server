@@ -1,10 +1,9 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${DB_PORT}/${POSTGRES_DB}?schema=public
+    image:
+      hiresphere:latest
+    networks:
+      - dev-network
     ports:
       - "${PORT}:${PORT}"
     depends_on:
@@ -21,12 +20,16 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - dev-network
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
       - "postgres_data:/var/lib/postgres/data"
+      
 
 volumes:
   postgres_data:
       
-
+networks:
+  dev-network: {}
