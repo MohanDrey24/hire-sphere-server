@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/create-user.dto';
-import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/filters/zod-validation.pipe';
 import { AuthGuard } from '@nestjs/passport';
 import { SignInDTO, signInSchema } from 'src/users/dto/sign-in.dto';
 import { Request, Response } from 'express';
