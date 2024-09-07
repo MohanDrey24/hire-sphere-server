@@ -15,7 +15,7 @@ import {
 import { JobService } from './job.service';
 import { CreateJobDTO, createJobSchema } from './dto/create-job.dto';
 import { UpdateJobDTO } from './dto/update-job.dto';
-import { ZodValidationPipe } from '../../common/filters/zod-validation.pipe';
+import { ZodValidationPipe } from '../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
 import { JobQueryDTO, JobQuerySchema } from './dto/job-query.dto';
 // import { AuthGuard } from '@nestjs/passport';
