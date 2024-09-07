@@ -10,7 +10,7 @@ import {
 import { CompanyService } from './company.service';
 import { Company } from '@prisma/client';
 import { CreateCompanyDTO, createCompanySchema, } from './dto/create-company.dto';
-import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/filters/zod-validation.pipe';
 // import { AuthGuard } from '@nestjs/passport';
 
 // @UseGuards(AuthGuard('jwt'))
