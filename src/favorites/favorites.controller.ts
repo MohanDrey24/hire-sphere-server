@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { ZodValidationPipe } from 'common/filters/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/filters/zod-validation.pipe';
 import { AddFavoriteSchema, AddFavoriteDTO } from './dto/add-favorite.dto';
 import { Favorite } from '@prisma/client';
 
