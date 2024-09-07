@@ -52,5 +52,5 @@ ENV NODE_ENV production
 ENV PORT 4000
 
 # Run project
-ENTRYPOINT [ "node", "dist/src/main" ]
-CMD [""]
+# ENTRYPOINT [ "node", "dist/src/main" ]
+CMD ["npm", "run", "start:prod"]
