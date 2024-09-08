@@ -1,19 +1,23 @@
 services:
   app:
-    image:
-      hiresphere:latest
+    container_name: hire_sphere_server
+    build:
+      context: .
+      dockerfile: Dockerfile
     networks:
       - dev-network
+    restart: unless-stopped
     ports:
-      - "${PORT}:${PORT}"
+      - "4000:4000"
     depends_on:
       - db
     env_file:
       - .env
-    volumes:
-      - ./prisma:/usr/src/app/prisma
+    command: >
+      sh -c "npx prisma migrate deploy && npm run start:prod"
+
   db:
-    image: postgres:latest
+    image: postgres:15
     container_name: postgres_db
     restart: always
     environment:
@@ -23,9 +27,9 @@ services:
     networks:
       - dev-network
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - "5432:5432"
     volumes:
-      - "postgres_data:/var/lib/postgres/data"
+      - "postgres_data:/var/lib/postgresql/data"
       
 
 volumes:
