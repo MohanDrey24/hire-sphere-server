@@ -1,4 +1,4 @@
-# Use Node.js 20 as the base image
+# Base Stage
 FROM node:20-alpine as base
 
 # Set working directory
@@ -10,6 +10,7 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm ci
 
+# Build Stage
 FROM node:20-alpine as build
 
 # Set working directory
@@ -27,6 +28,7 @@ RUN npx prisma generate
 # Build project
 RUN npm run build
 
+# Runner stage
 FROM node:20-alpine as runner
 
 # Set working directory
@@ -37,6 +39,7 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/.env .env
 COPY --from=build /usr/src/app/package.json .
 COPY --from=build /usr/src/app/package-lock.json .
+COPY --from=build /usr/src/app/prisma ./prisma
 
 # Install dependencies except dev dependencies
 RUN npm install --omit=dev
@@ -49,8 +52,6 @@ EXPOSE 4000
 
 # Set production environmental variables 
 ENV NODE_ENV production
-ENV PORT 4000
 
 # Run project
-# ENTRYPOINT [ "node", "dist/src/main" ]
 CMD ["npm", "run", "start:prod"]
