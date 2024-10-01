@@ -75,11 +75,9 @@ export class AuthController {
     if (userProfile) {
       const token = this.jwtService.sign({ id: userProfile.id })
       res.cookie('HS', token, { httpOnly: true });
-      res.status(HttpStatus.OK).json({ message: 'Log in successful' });
+      res.redirect('http://localhost:3000/dashboard')
     } else {
-      res.status(HttpStatus.NOT_FOUND).json({
-        message: 'User information not found',
-      });
+      res.redirect('http://localhost:3000?error=authentication_failed')
     }
   }
 }
