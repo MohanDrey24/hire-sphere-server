@@ -51,7 +51,7 @@ export class AuthController {
   @Post('signout')
   async signout(@Res({ passthrough: true }) res: Response): Promise<void> {
     res.cookie('HS', '', { expires: new Date() });
-    res.status(HttpStatus.OK);
+    res.status(HttpStatus.OK).json({ mesage: 'Successful logout'});
   }
 
   @Get('google')
