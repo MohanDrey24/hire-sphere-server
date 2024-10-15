@@ -47,7 +47,8 @@ export class AuthService {
   }
 
   async validateUser(payload: { 
-    email: string, 
+    email: string,
+    // name: string, 
     provider: string, 
     providerAccountId: string,
     access_token: string,
@@ -74,6 +75,7 @@ export class AuthService {
         await prisma.account.create({
           data: {
             userId: newUser.id,
+            // name,
             provider: provider.toUpperCase(),
             providerAccountId,
             access_token,
