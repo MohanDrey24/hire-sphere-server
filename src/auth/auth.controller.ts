@@ -44,7 +44,7 @@ export class AuthController {
       res.cookie('HS', token, { httpOnly: true, sameSite: "none" });
       res.status(HttpStatus.OK).json({ message: 'Log in successful' });
     } catch (error) {
-      throw new NotFoundException('Log in unsuccessful');
+      throw new NotFoundException(`Log in unsuccessful ${error}`);
     }
   }
 
