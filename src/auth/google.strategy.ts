@@ -19,7 +19,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     refresh_token: string,
     profile: Profile,
     done: VerifyCallback,
-  ): Promise<any> {
+  ): Promise<void> {
     const email = profile.emails?.[0]?.value || profile._json.email || '';
     const name = profile._json?.name || ''
 
