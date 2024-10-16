@@ -19,13 +19,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     refresh_token: string,
     profile: Profile,
     done: VerifyCallback,
-  ): Promise<void> {
+  ): Promise<any> {
     const email = profile.emails?.[0]?.value || profile._json.email || '';
-    // const name = profile.displayName || ''
-  
+    const name = profile._json?.name || ''
+
     const user = await this.authService.validateUser({
       email,
-      // name,
+      name,
       provider: profile.provider,
       providerAccountId: profile.id,
       access_token,
@@ -33,5 +33,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
 
     done(null, user);
+
   }
 }
