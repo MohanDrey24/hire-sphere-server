@@ -48,13 +48,13 @@ export class AuthService {
 
   async validateUser(payload: { 
     email: string,
-    // name: string, 
+    name?: string, 
     provider: string, 
     providerAccountId: string,
     access_token: string,
     refresh_token: string,
   }): Promise<User> {
-    const { email, provider, providerAccountId, access_token, refresh_token } = payload
+    const { email, name, provider, providerAccountId, access_token, refresh_token } = payload
 
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -75,7 +75,7 @@ export class AuthService {
         await prisma.account.create({
           data: {
             userId: newUser.id,
-            // name,
+            name,
             provider: provider.toUpperCase(),
             providerAccountId,
             access_token,
