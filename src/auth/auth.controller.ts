@@ -41,7 +41,7 @@ export class AuthController {
     try {
       const token = await this.authService.signIn(data);
 
-      res.cookie('HS', token, { httpOnly: true, sameSite: "none" });
+      res.cookie('HS', token, { httpOnly: true, sameSite: 'lax' });
       res.status(HttpStatus.OK).json({ message: 'Log in successful' });
     } catch (error) {
       throw new NotFoundException(`Log in unsuccessful ${error}`);
