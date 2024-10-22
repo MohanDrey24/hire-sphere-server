@@ -6,13 +6,13 @@ import {
   Param,
   ParseUUIDPipe,
   Query,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@prisma/client';
-// import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
