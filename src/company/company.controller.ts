@@ -5,15 +5,15 @@ import {
   ParseUUIDPipe,
   Post,
   Query,
-  // UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { Company } from '@prisma/client';
 import { CreateCompanyDTO, createCompanySchema, } from './dto/create-company.dto';
 import { ZodValidationPipe } from 'src/common/filters/zod-validation.pipe';
-// import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('company')
 export class CompanyController {
   constructor(private companyService: CompanyService) {}
