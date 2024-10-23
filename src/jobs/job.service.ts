@@ -12,7 +12,11 @@ export class JobService {
   }
 
   async findAll(): Promise<Job[]> {
-    return await this.prismaService.job.findMany();
+    return await this.prismaService.job.findMany({
+      include: {
+        company: true,
+      }
+    });
   }
 
   async findSpecificJobs(query: JobQueryDTO): Promise<Job[]> {
