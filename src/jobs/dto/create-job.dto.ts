@@ -7,10 +7,11 @@ export const createJobSchema = z.object({
     }),
   }),
   position: z.string().min(1),
-  location: z.enum(['HYBRID', 'REMOTE', 'ONSITE']),
+  type: z.enum(['HYBRID', 'REMOTE', 'ONSITE']),
   country: z.string().optional(),
   salary: z.number().positive(),
   isAvailable: z.boolean().default(true),
+  description: z.string().optional(),
 });
 
 export type CreateJobDTO = z.infer<typeof createJobSchema>;
