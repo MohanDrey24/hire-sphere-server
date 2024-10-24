@@ -30,7 +30,6 @@ export class JobController {
   async createJob(@Body() data: CreateJobDTO): Promise<Job> {
     return await this.jobService.createJob(data);
   }
-
   
   @Get('all')
   async findAll(): Promise<Job[]> {
