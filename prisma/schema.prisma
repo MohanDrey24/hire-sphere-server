@@ -13,8 +13,9 @@ model Job {
   company     Company     @relation(fields: [companyId], references: [id])
   companyId   String 
   position    String
-  location    WorkMode
+  type        WorkMode
   country     String?
+  description String?
   salary      Decimal     @db.Decimal(10, 2)
   isAvailable Boolean     @default(true)
   favorites   Favorite[]
