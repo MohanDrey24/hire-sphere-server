@@ -9,19 +9,5 @@ export default tseslint.config(
       "eslint/**/*.{js,ts}",
     ]
   },
-  // { 
-  //   languageOptions: {
-  //     parserOptions: {
-  //       projectService: true,
-  //       tsconfigRootDir: import.meta.dirname,
-  //     },
-  //   },
-  // },
   ...typescriptEslint,
 )
-
-// import tseslint from "typescript-eslint";
-
-// export default tseslint.config(
-//   ...tseslint.configs.recommended
-// )
