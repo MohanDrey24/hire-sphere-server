@@ -43,3 +43,4 @@ Make sure you have the following installed:
 ```bash
 git clone https://github.com/MohanDrey24/hire-sphere-server.git
 cd hire-sphere-server
+npx prisma db seed
