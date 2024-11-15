@@ -18,12 +18,14 @@ export class AuthService {
   async createUser(data: CreateUserDTO): Promise<User> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(data.password, salt);
-    const { email } = data;
+    const { email, firstName, lastName } = data;
 
     return this.prismaService.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
           email,
+          firstName,
+          lastName,
         },
       });
 
@@ -69,13 +71,13 @@ export class AuthService {
         const newUser = await prisma.user.create({
           data: {
             email,
+            name,
           },
         });
 
         await prisma.account.create({
           data: {
             userId: newUser.id,
-            name,
             provider: provider.toUpperCase(),
             providerAccountId,
             access_token,
