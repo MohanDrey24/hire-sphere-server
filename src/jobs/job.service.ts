@@ -15,7 +15,10 @@ export class JobService {
     return await this.prismaService.job.findMany({
       include: {
         company: true,
-      }
+      },
+      orderBy: {
+        createdAt: "asc"
+      },
     });
   }
 
