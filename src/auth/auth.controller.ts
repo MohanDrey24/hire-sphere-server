@@ -8,6 +8,7 @@ import {
   Res,
   NotFoundException,
   HttpStatus,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { usersSchema, CreateUserDTO } from 'src/users/dto/create-user.dto';
@@ -28,8 +29,18 @@ export class AuthController {
   ) {}
 
   @Post()
-  async signUp(@Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO) {
-    return await this.authService.createUser(data);
+  async signUp(
+    @Body(new ZodValidationPipe(usersSchema)) data: CreateUserDTO,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const token = await this.authService.createUser(data);
+
+      res.cookie('HS', token, { httpOnly: true, sameSite: 'lax' })
+      res.status(HttpStatus.OK).json({ message: 'Sign up successful. Logging in immediately' });
+    } catch (e) {
+      throw new InternalServerErrorException(`Unsuccessful sign up. ${e}`)
+    }
   }
 
   @Post('signin')
