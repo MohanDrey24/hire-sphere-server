@@ -15,7 +15,7 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async createUser(data: CreateUserDTO): Promise<User> {
+  async createUser(data: CreateUserDTO): Promise<string> {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(data.password, salt);
     const { email, firstName, lastName } = data;
@@ -38,7 +38,7 @@ export class AuthService {
         },
       });
 
-      return user;
+      return this.jwtService.sign({ id: user.id });
     });
   }
 
