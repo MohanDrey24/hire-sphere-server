@@ -19,6 +19,7 @@ import { ZodValidationPipe } from '../common/filters/zod-validation.pipe';
 import { Job } from '@prisma/client';
 import { JobQueryDTO, JobQuerySchema } from './dto/job-query.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AutocompleteDTO, autocompleteSchema } from './dto/autocomplete-dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('jobs')
@@ -54,5 +55,11 @@ export class JobController {
   @HttpCode(204)
   async deleteJob(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     await this.jobService.deleteJob({ id });
+  }
+
+  @Get('autocomplete')
+  @UsePipes(new ZodValidationPipe(autocompleteSchema))
+  async autocomplete(@Query() query: AutocompleteDTO): Promise<Job[]> {
+    return this.jobService.autocomplete(query)
   }
 }
