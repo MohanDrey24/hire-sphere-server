@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
+import { AutocompleteDTO } from './dto/autocomplete-dto';
 
 @Injectable()
 export class JobService {
@@ -39,6 +40,28 @@ export class JobService {
     }
 
     return result;
+  }
+
+  async autocomplete(query: AutocompleteDTO): Promise<Job[]> {
+    if (!query) return [];
+
+    const { position, name } = query;
+
+    return this.prismaService.job.findMany({
+      where: {
+        position: {
+          contains: position,
+          mode: 'insensitive',
+        },
+        company: {
+          name: {
+            contains: name,
+            mode: 'insensitive'
+          }
+        }
+      },
+      take: 10,
+    });
   }
 
   async updateJob(
