@@ -3,7 +3,6 @@ import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
 import { AutocompleteDTO } from './dto/autocomplete-dto';
-import { Autocomplete } from './interfaces/autocomplete.interface';
 
 @Injectable()
 export class JobService {
@@ -43,7 +42,7 @@ export class JobService {
     return result;
   }
 
-  async autocomplete(query: AutocompleteDTO): Promise<Autocomplete[]> {
+  async autocomplete(query: AutocompleteDTO): Promise<Job[]> {
     if (!query) return [];
 
     const { position, name } = query;
@@ -58,16 +57,6 @@ export class JobService {
           name: {
             contains: name,
             mode: 'insensitive'
-          }
-        }
-      },
-      select: {
-        id: true,
-        companyId: true,
-        position: true,
-        company: {
-          select: {
-            name: true,
           }
         }
       },
