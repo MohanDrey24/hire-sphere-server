@@ -20,7 +20,6 @@ import { Job } from '@prisma/client';
 import { JobQueryDTO, JobQuerySchema } from './dto/job-query.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AutocompleteDTO, autocompleteSchema } from './dto/autocomplete-dto';
-import { Autocomplete } from './interfaces/autocomplete.interface';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('jobs')
@@ -60,7 +59,7 @@ export class JobController {
 
   @Get('autocomplete')
   @UsePipes(new ZodValidationPipe(autocompleteSchema))
-  async autocomplete(@Query() query: AutocompleteDTO): Promise<Autocomplete[]> {
+  async autocomplete(@Query() query: AutocompleteDTO): Promise<Job[]> {
     return this.jobService.autocomplete(query)
   }
 }
