@@ -15,7 +15,14 @@ export class UsersService {
     return await this.prismaService.user.findUniqueOrThrow({
       where,
       include: {
-        accounts: true,
+        accounts: {
+          select: {
+            userId: true,
+            provider: true,
+            providerAccountId: true,
+            expires_at: true,
+          }
+        }
       },
     });
   }
