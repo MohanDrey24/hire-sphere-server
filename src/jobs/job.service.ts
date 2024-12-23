@@ -43,25 +43,29 @@ export class JobService {
   }
 
   async autocomplete(query: AutocompleteDTO): Promise<Job[]> {
-    if (!query) return [];
-
     const { position, name } = query;
-
-    return this.prismaService.job.findMany({
-      where: {
-        position: {
-          contains: position,
-          mode: 'insensitive',
-        },
-        company: {
-          name: {
-            contains: name,
-            mode: 'insensitive'
+    
+    if (!query) {
+      return [];
+    } else if (position === 'undefined') {
+      return this.findAll();
+    } else {
+      return this.prismaService.job.findMany({
+        where: {
+          position: {
+            contains: position,
+            mode: 'insensitive',
+          },
+          company: {
+            name: {
+              contains: name,
+              mode: 'insensitive'
+            }
           }
-        }
-      },
-      take: 10,
-    });
+        },
+        take: 10,
+      });
+    }
   }
 
   async updateJob(
