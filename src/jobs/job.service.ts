@@ -47,10 +47,11 @@ export class JobService {
     
     if (!query) {
       return [];
-    } else if (position === 'undefined') {
-      return this.findAll();
     } else {
       return this.prismaService.job.findMany({
+        include: {
+          company: true
+        },
         where: {
           position: {
             contains: position,
