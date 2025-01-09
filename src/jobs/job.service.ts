@@ -3,6 +3,7 @@ import { PrismaService } from './../prisma.service';
 import { Job, Prisma } from '@prisma/client';
 import { JobQueryDTO } from './dto/job-query.dto';
 import { AutocompleteDTO } from './dto/autocomplete-dto';
+import { JobSearchDTO } from './dto/job-search-dto';
 
 @Injectable()
 export class JobService {
@@ -81,5 +82,73 @@ export class JobService {
 
   async deleteJob(where: Prisma.JobWhereUniqueInput): Promise<void> {
     await this.prismaService.job.delete({ where });
+  }
+
+  async searchJobs(searchDTO: JobSearchDTO) {
+    const {
+      query,
+      type,
+      // minSalary,
+      // maxSalary,
+      country,
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc'
+    } = searchDTO;
+
+    const skip = (page -1) * limit;
+
+    const where: Prisma.JobWhereInput = {
+      isAvailable: true,
+      AND: [],
+    }
+
+    if (query) {
+      where.OR = [
+        { position: { contains: query, mode: 'insensitive' } },
+        { company: { name: { contains: query, mode: 'insensitive' } } },
+      ];
+    }
+
+    if (country) {
+      where.country = { contains: country, mode: 'insensitive' };
+    }
+
+    if (type) {
+      where.type = type;
+    }
+
+    const [jobs, total] = await Promise.all([
+      this.prismaService.job.findMany({
+        where,
+        omit: {
+          description: true,
+        },
+        include: {
+          company: {
+            select: {
+              name: true
+            }
+          }
+        },
+        skip,
+        take: limit,
+        orderBy: {
+          [sortBy]: sortOrder
+        }
+      }),
+      this.prismaService.job.count({ where })
+    ]);
+
+    return {
+      jobs,
+      pagination: {
+        total,
+        pages: Math.ceil(total / limit),
+        currentPage: page,
+        perPage: limit,
+      }
+    }
   }
 }
