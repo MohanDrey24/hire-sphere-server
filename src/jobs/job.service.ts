@@ -88,8 +88,6 @@ export class JobService {
     const {
       query,
       type,
-      // minSalary,
-      // maxSalary,
       country,
       page = 1,
       limit = 10,
@@ -97,12 +95,38 @@ export class JobService {
       sortOrder = 'desc'
     } = searchDTO;
 
-    const skip = (page -1) * limit;
+    const skip = (page - 1) * limit;
+
+    if (!query && !type && !country) {
+      const randomJobs = await this.prismaService.job.findMany({
+        where: {
+          isAvailable: true
+        },
+        include: {
+          company: {
+            select: {
+              name: true
+            }
+          }
+        },
+        take: limit,
+      });
+
+      return {
+        jobs: randomJobs,
+        pagination: {
+          total: await this.prismaService.job.count({ where: { isAvailable: true } }),
+          pages: 1,
+          currentPage: 1,
+          perPage: limit,
+        }
+      };
+    }
 
     const where: Prisma.JobWhereInput = {
       isAvailable: true,
       AND: [],
-    }
+    };
 
     if (query) {
       where.OR = [
@@ -122,9 +146,6 @@ export class JobService {
     const [jobs, total] = await Promise.all([
       this.prismaService.job.findMany({
         where,
-        omit: {
-          description: true,
-        },
         include: {
           company: {
             select: {
@@ -149,6 +170,6 @@ export class JobService {
         currentPage: page,
         perPage: limit,
       }
-    }
+    };
   }
 }
