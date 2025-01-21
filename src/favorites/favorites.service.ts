@@ -6,8 +6,18 @@ import { Prisma, Favorite } from '@prisma/client';
 export class FavoritesService {
   constructor(private prismaService: PrismaService) {}
 
-  async add(data: Prisma.FavoriteCreateInput): Promise<Favorite> {
-    return await this.prismaService.favorite.create({ data });
+  async toggle(data: Prisma.FavoriteCreateInput): Promise<Favorite> {
+    const isRecordExist = await this.prismaService.favorite.findFirst({
+      where: { jobId: data.job.connect?.id}
+    })
+
+    if (isRecordExist) {
+      return await this.prismaService.favorite.delete({ 
+        where: { id: isRecordExist.id }
+      });
+    } else {
+      return await this.prismaService.favorite.create({ data });
+    }
   }
 
   async remove(where: Prisma.FavoriteWhereUniqueInput): Promise<void> {
