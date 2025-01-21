@@ -23,7 +23,7 @@ export class FavoritesController {
   constructor(private favoritesService: FavoritesService) {}
 
   @Post()
-  async addFavorite(
+  async toggleFavorite(
     @Body(new ZodValidationPipe(AddFavoriteSchema)) data: AddFavoriteDTO,
     @Req() req: UserRequest, 
   ): Promise<Favorite> {
@@ -41,7 +41,7 @@ export class FavoritesController {
       }
     }
 
-    return await this.favoritesService.add(payload);
+    return await this.favoritesService.toggle(payload);
   };
 
   @Get()
