@@ -45,8 +45,8 @@ export class FavoritesController {
   };
 
   @Get()
-  async getAll(): Promise<Favorite[]> {
-    return await this.favoritesService.getAllFavorites();
+  async getAll(@Req() req: UserRequest): Promise<Favorite[]> {
+    return await this.favoritesService.getAllFavorites({ userId: req.user.id });
   }
 
   @Delete(':id')
