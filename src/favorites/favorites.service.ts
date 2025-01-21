@@ -8,7 +8,7 @@ export class FavoritesService {
 
   async toggle(data: Prisma.FavoriteCreateInput): Promise<Favorite> {
     const isRecordExist = await this.prismaService.favorite.findFirst({
-      where: { jobId: data.job.connect?.id}
+      where: { userId: data.user.connect?.id, jobId: data.job.connect?.id }
     })
 
     if (isRecordExist) {
@@ -24,7 +24,7 @@ export class FavoritesService {
     await this.prismaService.favorite.delete({ where });
   }
 
-  async getAllFavorites(): Promise<Favorite[]> {
-    return this.prismaService.favorite.findMany();
+  async getAllFavorites(where: Prisma.FavoriteWhereInput): Promise<Favorite[]> {
+    return this.prismaService.favorite.findMany({ where });
   }
 }
