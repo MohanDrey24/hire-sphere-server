@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createJobSchema = z.object({
   company: z.object({
@@ -7,7 +7,7 @@ export const createJobSchema = z.object({
     }),
   }),
   position: z.string().min(1),
-  type: z.enum(['HYBRID', 'REMOTE', 'ONSITE']),
+  type: z.enum(["HYBRID", "REMOTE", "ONSITE"]),
   country: z.string().optional(),
   salary: z.number().positive(),
   isAvailable: z.boolean().default(true),

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { Prisma, Favorite } from '@prisma/client';
-import { ToggleFavorite } from './types/favorites';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
+import { Prisma, Favorite } from "@prisma/client";
+import { ToggleFavorite } from "./types/favorites";
 
 @Injectable()
 export class FavoritesService {

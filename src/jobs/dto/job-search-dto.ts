@@ -8,6 +8,6 @@ export class JobSearchDTO {
   country?: string;
   page?: number = 1;
   limit?: number = 10;
-  sortBy?: 'salary' | 'createdAt' = 'createdAt';
-  sortOrder?: 'asc' | 'desc' = 'desc';
+  sortBy?: "salary" | "createdAt" = "createdAt";
+  sortOrder?: "asc" | "desc" = "desc";
 }

@@ -2,8 +2,8 @@ import {
   PipeTransform,
   ArgumentMetadata,
   BadRequestException,
-} from '@nestjs/common';
-import { ZodSchema, ZodError } from 'zod';
+} from "@nestjs/common";
+import { ZodSchema, ZodError } from "zod";
 
 type NullableField = string | undefined;
 
@@ -22,7 +22,7 @@ export class ZodValidationPipe implements PipeTransform {
       if (error instanceof ZodError) {
         const errors = this.formatErrors(error, metadata.data);
         throw new BadRequestException({
-          message: 'Validation failed',
+          message: "Validation failed",
           errors: errors,
         });
       }
@@ -32,7 +32,7 @@ export class ZodValidationPipe implements PipeTransform {
 
   private formatErrors(
     error: ZodError,
-    paramName: NullableField,
+    paramName: NullableField
   ): ValidationError[] {
     return error.issues.map((issue) => ({
       field: issue.path.length > 0 ? `${issue.path}` : paramName,

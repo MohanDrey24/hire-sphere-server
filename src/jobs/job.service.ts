@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from './../prisma.service';
-import { Job, Prisma } from '@prisma/client';
-import { JobQueryDTO } from './dto/job-query.dto';
-import { AutocompleteDTO } from './dto/autocomplete-dto';
-import { JobSearchDTO } from './dto/job-search-dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "./../prisma.service";
+import { Job, Prisma } from "@prisma/client";
+import { JobQueryDTO } from "./dto/job-query.dto";
+import { AutocompleteDTO } from "./dto/autocomplete-dto";
+import { JobSearchDTO } from "./dto/job-search-dto";
 
 @Injectable()
 export class JobService {
@@ -19,7 +19,7 @@ export class JobService {
         company: true,
       },
       orderBy: {
-        createdAt: "asc"
+        createdAt: "asc",
       },
     });
   }
@@ -30,14 +30,14 @@ export class JobService {
     if (query.id) where.id = query.id;
     if (query.type) where.type = { equals: query.type };
     if (query.country)
-      where.country = { contains: query.country, mode: 'insensitive' };
+      where.country = { contains: query.country, mode: "insensitive" };
 
     const result = await this.prismaService.job.findMany({
       where,
     });
 
     if (result.length === 0) {
-      throw new NotFoundException('No job found matching this criteria');
+      throw new NotFoundException("No job found matching this criteria");
     }
 
     return result;
@@ -45,25 +45,25 @@ export class JobService {
 
   async autocomplete(query: AutocompleteDTO): Promise<Job[]> {
     const { position, name } = query;
-    
+
     if (!query) {
       return [];
     } else {
       return this.prismaService.job.findMany({
         include: {
-          company: true
+          company: true,
         },
         where: {
           position: {
             contains: position,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
           company: {
             name: {
               contains: name,
-              mode: 'insensitive'
-            }
-          }
+              mode: "insensitive",
+            },
+          },
         },
         take: 10,
       });
@@ -72,7 +72,7 @@ export class JobService {
 
   async updateJob(
     data: Prisma.JobUpdateInput,
-    where: Prisma.JobWhereUniqueInput,
+    where: Prisma.JobWhereUniqueInput
   ): Promise<Job> {
     return await this.prismaService.job.update({
       data,
@@ -91,8 +91,8 @@ export class JobService {
       country,
       page = 1,
       limit = 10,
-      sortBy = 'createdAt',
-      sortOrder = 'desc'
+      sortBy = "createdAt",
+      sortOrder = "desc",
     } = searchDTO;
 
     const skip = (page - 1) * limit;
@@ -100,14 +100,14 @@ export class JobService {
     if (!query && !type && !country) {
       const randomJobs = await this.prismaService.job.findMany({
         where: {
-          isAvailable: true
+          isAvailable: true,
         },
         include: {
           company: {
             select: {
-              name: true
-            }
-          }
+              name: true,
+            },
+          },
         },
         take: limit,
       });
@@ -115,11 +115,13 @@ export class JobService {
       return {
         jobs: randomJobs,
         pagination: {
-          total: await this.prismaService.job.count({ where: { isAvailable: true } }),
+          total: await this.prismaService.job.count({
+            where: { isAvailable: true },
+          }),
           pages: 1,
           currentPage: 1,
           perPage: limit,
-        }
+        },
       };
     }
 
@@ -130,13 +132,13 @@ export class JobService {
 
     if (query) {
       where.OR = [
-        { position: { contains: query, mode: 'insensitive' } },
-        { company: { name: { contains: query, mode: 'insensitive' } } },
+        { position: { contains: query, mode: "insensitive" } },
+        { company: { name: { contains: query, mode: "insensitive" } } },
       ];
     }
 
     if (country) {
-      where.country = { contains: country, mode: 'insensitive' };
+      where.country = { contains: country, mode: "insensitive" };
     }
 
     if (type) {
@@ -149,17 +151,17 @@ export class JobService {
         include: {
           company: {
             select: {
-              name: true
-            }
-          }
+              name: true,
+            },
+          },
         },
         skip,
         take: limit,
         orderBy: {
-          [sortBy]: sortOrder
-        }
+          [sortBy]: sortOrder,
+        },
       }),
-      this.prismaService.job.count({ where })
+      this.prismaService.job.count({ where }),
     ]);
 
     return {
@@ -169,7 +171,7 @@ export class JobService {
         pages: Math.ceil(total / limit),
         currentPage: page,
         perPage: limit,
-      }
+      },
     };
   }
 }

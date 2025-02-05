@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { CreateUserDTO } from 'src/users/dto/create-user.dto';
-import { v4 as uuidV4 } from 'uuid';
-import * as bcrypt from 'bcrypt';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
+import { UsersService } from "src/users/users.service";
+import { JwtService } from "@nestjs/jwt";
+import { User } from "@prisma/client";
+import { CreateUserDTO } from "src/users/dto/create-user.dto";
+import { v4 as uuidV4 } from "uuid";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
-    private usersService: UsersService,
+    private usersService: UsersService
   ) {}
 
   async createUser(data: CreateUserDTO): Promise<string> {
@@ -32,7 +32,7 @@ export class AuthService {
       await prisma.account.create({
         data: {
           userId: user.id,
-          provider: 'CREDENTIALS',
+          provider: "CREDENTIALS",
           providerAccountId: uuidV4(),
           password: hashedPassword,
         },
@@ -48,20 +48,27 @@ export class AuthService {
     return this.jwtService.sign({ id: result.id });
   }
 
-  async validateUser(payload: { 
-    email: string,
-    name?: string, 
-    provider: string, 
-    providerAccountId: string,
-    access_token: string,
-    refresh_token: string,
+  async validateUser(payload: {
+    email: string;
+    name?: string;
+    provider: string;
+    providerAccountId: string;
+    access_token: string;
+    refresh_token: string;
   }): Promise<User> {
-    const { email, name, provider, providerAccountId, access_token, refresh_token } = payload
+    const {
+      email,
+      name,
+      provider,
+      providerAccountId,
+      access_token,
+      refresh_token,
+    } = payload;
 
     const user = await this.prismaService.user.findUnique({
       where: {
         email,
-      }
+      },
     });
 
     if (user) {
@@ -86,7 +93,7 @@ export class AuthService {
         });
 
         return newUser;
-      })
+      });
     }
   }
 }

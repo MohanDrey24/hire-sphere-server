@@ -2,10 +2,10 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { Prisma, User } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+} from "@nestjs/common";
+import { PrismaService } from "src/prisma.service";
+import { Prisma, User } from "@prisma/client";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -21,8 +21,8 @@ export class UsersService {
             provider: true,
             providerAccountId: true,
             expires_at: true,
-          }
-        }
+          },
+        },
       },
     });
   }
@@ -44,13 +44,13 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
-    const isMatch = bcrypt.compareSync(password, account?.password ?? '');
+    const isMatch = bcrypt.compareSync(password, account?.password ?? "");
 
     if (!isMatch) {
-      throw new BadRequestException('Invalid Credentials');
+      throw new BadRequestException("Invalid Credentials");
     }
 
     return user;
@@ -60,7 +60,9 @@ export class UsersService {
     return await this.prismaService.user.delete({ where });
   }
 
-  async findIdByEmail(where: Prisma.UserWhereUniqueInput): Promise<{ id: string }> {
+  async findIdByEmail(
+    where: Prisma.UserWhereUniqueInput
+  ): Promise<{ id: string }> {
     const user = await this.prismaService.user.findUniqueOrThrow({
       where,
     });

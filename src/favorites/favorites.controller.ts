@@ -9,17 +9,17 @@ import {
   Post,
   Req,
   UseGuards,
-} from '@nestjs/common';
-import { FavoritesService } from './favorites.service';
-import { ZodValidationPipe } from 'src/common/filters/zod-validation.pipe';
-import { AddFavoriteSchema, AddFavoriteDTO } from './dto/add-favorite.dto';
-import { Favorite } from '@prisma/client';
-import { AuthGuard } from '@nestjs/passport';
-import { UserRequest } from 'src/common/types/user-request';
-import { ToggleFavorite } from './types/favorites';
+} from "@nestjs/common";
+import { FavoritesService } from "./favorites.service";
+import { ZodValidationPipe } from "src/common/filters/zod-validation.pipe";
+import { AddFavoriteSchema, AddFavoriteDTO } from "./dto/add-favorite.dto";
+import { Favorite } from "@prisma/client";
+import { AuthGuard } from "@nestjs/passport";
+import { UserRequest } from "src/common/types/user-request";
+import { ToggleFavorite } from "./types/favorites";
 
-@UseGuards(AuthGuard('jwt'))
-@Controller('favorites')
+@UseGuards(AuthGuard("jwt"))
+@Controller("favorites")
 export class FavoritesController {
   constructor(private favoritesService: FavoritesService) {}
 
@@ -27,7 +27,7 @@ export class FavoritesController {
   @HttpCode(200)
   async toggleFavorite(
     @Body(new ZodValidationPipe(AddFavoriteSchema)) data: AddFavoriteDTO,
-    @Req() req: UserRequest,
+    @Req() req: UserRequest
   ): Promise<ToggleFavorite> {
     const payload = {
       user: {
@@ -50,9 +50,9 @@ export class FavoritesController {
     return await this.favoritesService.getAllFavorites({ userId: req.user.id });
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(204)
-  async removeFavorite(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  async removeFavorite(@Param("id", ParseUUIDPipe) id: string): Promise<void> {
     await this.favoritesService.remove({ id });
   }
 }
