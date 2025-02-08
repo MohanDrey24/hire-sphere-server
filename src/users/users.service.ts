@@ -6,6 +6,7 @@ import {
 import { PrismaService } from "src/prisma.service";
 import { Prisma, User } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import { UpdateUserDTO } from "./dto/update-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -68,5 +69,20 @@ export class UsersService {
     });
 
     return { id: user.id };
+  }
+
+  async updateUser(id: string, data: UpdateUserDTO) {
+    const { name, firstName, lastName } = data;
+
+    return await this.prismaService.user.updateManyAndReturn({
+      where: {
+        id,
+      },
+      data: {
+        name,
+        firstName,
+        lastName,
+      },
+    });
   }
 }
