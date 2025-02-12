@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // the origin should be dynamic
   app.enableCors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:8080",
     credentials: true,
   });
 
