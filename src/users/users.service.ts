@@ -12,8 +12,8 @@ import { UpdateUserDTO } from "./dto/update-user.dto";
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  async findUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return await this.prismaService.user.findUniqueOrThrow({
+  async findUser(where: Prisma.UserWhereUniqueInput): Promise<User | null> {
+    return await this.prismaService.user.findUnique({
       where,
       include: {
         accounts: {
