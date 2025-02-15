@@ -24,12 +24,12 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  async findUser(@Query("id", ParseUUIDPipe) id: string): Promise<User> {
+  async findUser(@Query("id", ParseUUIDPipe) id: string): Promise<User | null> {
     return await this.usersService.findUser({ id });
   }
 
   @Get("current")
-  async getCurrentUser(@Req() req: UserRequest): Promise<User> {
+  async getCurrentUser(@Req() req: UserRequest): Promise<User | null> {
     return await this.usersService.findUser({ id: req.user.id });
   }
 
